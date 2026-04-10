@@ -24,8 +24,8 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
-// User Routes (Login Required)
-Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
+// User Routes (Login Required) - MIDDLEWARE DISABLED FOR DEVELOPMENT
+Route::prefix('user')->group(function () {
     Route::get('/bookings', [BookingController::class, 'index'])->name('user.bookings');
     Route::get('/bookings/create/{car}', [BookingController::class, 'create'])->name('bookings.create');
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
@@ -33,8 +33,8 @@ Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
     Route::post('/profile', [ProfileController::class, 'update'])->name('user.profile.update');
 });
 
-// Admin Routes
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+// Admin Routes - MIDDLEWARE DISABLED FOR DEVELOPMENT
+Route::prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
