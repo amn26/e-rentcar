@@ -13,6 +13,7 @@
                 <a href="{{ route('home') }}" class="text-xl font-bold text-blue-600">E-RentCar</a>
                 <div class="flex gap-4">
                     <a href="{{ route('home') }}" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Home</a>
+                    <a href="{{ route('user.profile') }}" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Profile</a>
                     <form action="{{ route('logout') }}" method="POST" class="inline">
                         @csrf
                         <button class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Logout</button>

@@ -7,7 +7,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CarController as AdminCarController;
-use App\Http\Controllers\Admin\BookingController as AdminBookingController;
+use App\Http\Controllers\User\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -29,6 +29,8 @@ Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
     Route::get('/bookings', [BookingController::class, 'index'])->name('user.bookings');
     Route::get('/bookings/create/{car}', [BookingController::class, 'create'])->name('bookings.create');
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('user.profile');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('user.profile.update');
 });
 
 // Admin Routes

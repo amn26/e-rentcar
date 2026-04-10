@@ -104,6 +104,43 @@
                 <h2 class="text-4xl font-bold mb-4">Available Cars</h2>
                 <p class="text-gray-600 text-lg">Choose from our wide selection of premium vehicles</p>
             </div>
+
+            <!-- Search & Filter -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <form method="GET" action="{{ route('home') }}">
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div>
+                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search car or brand..." class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <select name="transmisi" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                                <option value="">All Transmission</option>
+                                <option value="Automatic" {{ request('transmisi') == 'Automatic' ? 'selected' : '' }}>Automatic</option>
+                                <option value="Manual" {{ request('transmisi') == 'Manual' ? 'selected' : '' }}>Manual</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select name="kapasitas" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                                <option value="">All Capacity</option>
+                                <option value="5" {{ request('kapasitas') == '5' ? 'selected' : '' }}>5 Seats</option>
+                                <option value="7" {{ request('kapasitas') == '7' ? 'selected' : '' }}>7 Seats</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select name="sort" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                                <option value="">Sort By</option>
+                                <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Price: Low to High</option>
+                                <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Price: High to Low</option>
+                                <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest</option>
+                            </select>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="submit" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Search</button>
+                            <a href="{{ route('home') }}" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Reset</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @forelse($cars as $car)
