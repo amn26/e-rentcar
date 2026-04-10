@@ -11,18 +11,35 @@ class BookingController extends Controller
 {
     public function index()
     {
+        // For development without auth
+        if (!auth()->check()) {
+            $user = \App\Models\User::where('role', 'user')->first();
+            auth()->login($user);
+        }
+        
         $bookings = auth()->user()->bookings()->with('car')->get();
         return view('bookings.index', compact('bookings'));
     }
 
     public function create($carId)
     {
+        // For development without auth
+        if (!auth()->check()) {
+            $user = \App\Models\User::where('role', 'user')->first();
+            auth()->login($user);
+        }
+        
         $car = Car::findOrFail($carId);
         return view('bookings.create', compact('car'));
     }
 
     public function store(Request $request)
     {
+        // For development without auth
+        if (!auth()->check()) {
+            $user = \App\Models\User::where('role', 'user')->first();
+            auth()->login($user);
+        }
         if (!auth()->user()->isVerified()) {
             return back()->with('error', 'Your account must be verified first');
         }
