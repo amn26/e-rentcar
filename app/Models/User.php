@@ -11,6 +11,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     public $incrementing = false;
+    public $timestamps = false;
     protected $keyType = 'string';
 
     protected $fillable = [

@@ -11,8 +11,9 @@ class Car extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
-        'id', 'brand', 'model', 'year', 'plate_number', 'price_per_day',
-        'status', 'image', 'description'
+        'id', 'name', 'brand', 'year', 'plate_number', 'price_per_day',
+        'image', 'stnk_number', 'stnk_expired_date', 'pajak_expired_date',
+        'warna', 'bahan_bakar', 'transmisi', 'kapasitas_penumpang', 'kondisi'
     ];
 
     public function bookings()
@@ -22,6 +23,6 @@ class Car extends Model
 
     public function isAvailable()
     {
-        return $this->status === 'available';
+        return $this->Status == 1 && $this->IsDeleted == 0;
     }
 }

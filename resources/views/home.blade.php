@@ -55,7 +55,7 @@
                     @endif
                 </div>
                 <div class="p-6">
-                    <h3 class="text-xl font-bold mb-2">{{ $car->brand }} {{ $car->model }}</h3>
+                    <h3 class="text-xl font-bold mb-2">{{ $car->name }}</h3>
                     <p class="text-2xl font-bold text-blue-600 mb-4">Rp {{ number_format($car->price_per_day, 0, ',', '.') }}/day</p>
                     <a href="{{ route('cars.show', $car->id) }}" class="block text-center bg-blue-600 text-white py-2 rounded hover:bg-blue-700">View Details</a>
                 </div>

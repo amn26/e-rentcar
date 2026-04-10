@@ -29,12 +29,15 @@
                     @endif
                 </div>
                 <div class="p-8">
-                    <h1 class="text-3xl font-bold mb-4">{{ $car->brand }} {{ $car->model }}</h1>
+                    <h1 class="text-3xl font-bold mb-4">{{ $car->name }}</h1>
                     <p class="text-3xl font-bold text-blue-600 mb-6">Rp {{ number_format($car->price_per_day, 0, ',', '.') }}/day</p>
                     
                     <div class="mb-6 space-y-2">
+                        <p><strong>Brand:</strong> {{ $car->brand }}</p>
                         <p><strong>Year:</strong> {{ $car->year }}</p>
                         <p><strong>Plate:</strong> {{ $car->plate_number }}</p>
+                        <p><strong>Transmission:</strong> {{ $car->transmisi }}</p>
+                        <p><strong>Capacity:</strong> {{ $car->kapasitas_penumpang }} seats</p>
                         <p><strong>Status:</strong> 
                             @if($car->isAvailable())
                                 <span class="text-green-600">Available</span>
