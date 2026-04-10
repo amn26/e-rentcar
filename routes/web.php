@@ -4,6 +4,10 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\CarController as AdminCarController;
+use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -29,7 +33,16 @@ Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
 
 // Admin Routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    
+    Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
+    Route::post('/users/{id}/approve', [UserController::class, 'approve'])->name('admin.users.approve');
+    Route::post('/users/{id}/reject', [UserController::class, 'reject'])->name('admin.users.reject');
+    
+    Route::get('/cars', [AdminCarController::class, 'index'])->name('admin.cars.index');
+    Route::get('/cars/create', [AdminCarController::class, 'create'])->name('admin.cars.create');
+    Route::post('/cars', [AdminCarController::class, 'store'])->name('admin.cars.store');
+    Route::delete('/cars/{id}', [AdminCarController::class, 'destroy'])->name('admin.cars.destroy');
+    
+    Route::get('/bookings', [AdminBookingController::class, 'index'])->name('admin.bookings.index');
 });

@@ -167,6 +167,76 @@
         </div>
     </section>
 
+    <!-- Rental Calculator -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="max-w-2xl mx-auto">
+                <h2 class="text-3xl font-bold text-center mb-8">Rental Cost Calculator</h2>
+                <div class="bg-gray-50 rounded-xl p-8 shadow-lg">
+                    <div class="mb-6">
+                        <label class="block text-gray-700 font-semibold mb-2">Select Car</label>
+                        <select id="calc-car" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-blue-500">
+                            <option value="">Choose a car...</option>
+                            @foreach($cars as $car)
+                                <option value="{{ $car->price_per_day }}" data-name="{{ $car->name }}">{{ $car->name }} - Rp {{ number_format($car->price_per_day, 0, ',', '.') }}/day</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Start Date</label>
+                            <input type="date" id="calc-start" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">End Date</label>
+                            <input type="date" id="calc-end" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-blue-500">
+                        </div>
+                    </div>
+                    <div class="bg-blue-50 rounded-lg p-6 mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-700">Total Days:</span>
+                            <span class="font-bold text-xl" id="calc-days">0</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">Total Price:</span>
+                            <span class="font-bold text-2xl text-blue-600" id="calc-total">Rp 0</span>
+                        </div>
+                    </div>
+                    <button onclick="calculateRental()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 font-bold">Calculate</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function calculateRental() {
+            const pricePerDay = parseFloat(document.getElementById('calc-car').value);
+            const startDate = new Date(document.getElementById('calc-start').value);
+            const endDate = new Date(document.getElementById('calc-end').value);
+            
+            if (!pricePerDay || !startDate || !endDate) {
+                alert('Please fill all fields');
+                return;
+            }
+            
+            if (endDate <= startDate) {
+                alert('End date must be after start date');
+                return;
+            }
+            
+            const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+            const total = days * pricePerDay;
+            
+            document.getElementById('calc-days').textContent = days;
+            document.getElementById('calc-total').textContent = 'Rp ' + total.toLocaleString('id-ID');
+        }
+        
+        // Set min date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('calc-start').setAttribute('min', today);
+        document.getElementById('calc-end').setAttribute('min', today);
+    </script>
+
     <!-- Footer -->
     <footer class="bg-gray-900 text-white py-12">
         <div class="container mx-auto px-6">
