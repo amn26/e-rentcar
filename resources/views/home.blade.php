@@ -275,40 +275,21 @@
     </script>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-12">
+    <footer class="bg-gray-900 text-white py-8">
         <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-                <div>
-                    <h3 class="text-xl font-bold mb-4">E-RentCar</h3>
-                    <p class="text-gray-400">Your trusted partner for premium car rentals</p>
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h3 class="text-xl font-bold mb-2">E-RentCar</h3>
+                    <p class="text-gray-400">Rental Mobil Terpercaya</p>
                 </div>
-                <div>
-                    <h4 class="font-bold mb-4">Quick Links</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-white">About Us</a></li>
-                        <li><a href="#cars" class="hover:text-white">Our Cars</a></li>
-                        <li><a href="#" class="hover:text-white">Contact</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4">Support</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-white">FAQ</a></li>
-                        <li><a href="#" class="hover:text-white">Terms & Conditions</a></li>
-                        <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold mb-4">Contact</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li>Email: info@erentcar.com</li>
-                        <li>Phone: +62 123 4567 890</li>
-                        <li>Jakarta, Indonesia</li>
-                    </ul>
+                <div class="text-center md:text-right">
+                    <p class="text-gray-400 mb-1">Hubungi Kami:</p>
+                    <p class="text-gray-300">📧 info@erentcar.com</p>
+                    <p class="text-gray-300">📱 +62 812-3456-7890</p>
                 </div>
             </div>
-            <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
-                <p>&copy; 2026 E-RentCar. All rights reserved.</p>
+            <div class="border-t border-gray-800 mt-6 pt-6 text-center text-gray-400 text-sm">
+                <p>&copy; 2026 E-RentCar. Kelompok 3 - Sistem Rental Mobil</p>
             </div>
         </div>
     </footer>
