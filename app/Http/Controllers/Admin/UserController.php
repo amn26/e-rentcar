@@ -10,7 +10,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::where('role', 'user')->get();
+        $users = User::all();
         return view('admin.users.index', compact('users'));
     }
 
@@ -26,5 +26,29 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->update(['verification_status' => 'rejected']);
         return back()->with('success', 'User rejected');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|max:50',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'phone' => 'nullable|max:15',
+            'address' => 'nullable|max:150',
+            'verification_status' => 'required|in:pending,verified,rejected',
+            'password' => 'nullable|min:6',
+        ]);
+
+        if ($request->filled('password')) {
+            $validated['password'] = bcrypt($request->password);
+        } else {
+            unset($validated['password']);
+        }
+
+        $user->update($validated);
+
+        return redirect()->route('admin.users.index')->with('success', 'User updated successfully');
     }
 }

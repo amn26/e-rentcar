@@ -3,30 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Car</title>
+    <title>Add New Car - E-RentCar</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gray-100">
-    <div class="flex h-screen">
-        <!-- Sidebar -->
-        <div class="w-64 bg-gray-800 text-white">
-            <div class="p-6">
-                <h2 class="text-2xl font-bold">Admin Panel</h2>
+<body class="bg-gray-50">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <a href="{{ route('home') }}" class="text-2xl font-bold text-blue-600 flex items-center gap-2">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/>
+                        <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z"/>
+                    </svg>
+                    E-RentCar
+                </a>
+                <div class="hidden md:flex gap-8 items-center">
+                    <a href="{{ route('admin.dashboard') }}" class="text-gray-700 hover:text-blue-600 font-medium">Dashboard</a>
+                    <a href="{{ route('admin.users.index') }}" class="text-gray-700 hover:text-blue-600 font-medium">Users</a>
+                    <a href="{{ route('admin.cars.index') }}" class="text-blue-600 font-medium">Cars</a>
+                    <a href="{{ route('admin.bookings.index') }}" class="text-gray-700 hover:text-blue-600 font-medium">Bookings</a>
+                </div>
+                <div class="flex gap-3 items-center">
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium">
+                            <svg class="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-700 hidden md:block">{{ auth()->user()->name }}</span>
+                            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50" style="display: none;">
+                            <a href="{{ route('user.profile') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                My Profile
+                            </a>
+                            <hr class="my-2">
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 flex items-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                    Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <nav class="mt-6">
-                <a href="{{ route('admin.dashboard') }}" class="block py-3 px-6 hover:bg-gray-700">Dashboard</a>
-                <a href="{{ route('admin.users.index') }}" class="block py-3 px-6 hover:bg-gray-700">Users</a>
-                <a href="{{ route('admin.cars.index') }}" class="block py-3 px-6 bg-gray-900">Cars</a>
-                <a href="{{ route('admin.bookings.index') }}" class="block py-3 px-6 hover:bg-gray-700">Bookings</a>
-                <a href="{{ route('home') }}" class="block py-3 px-6 hover:bg-gray-700">View Site</a>
-            </nav>
         </div>
+    </nav>
 
-        <!-- Main Content -->
-        <div class="flex-1 overflow-y-auto p-8">
-            <h1 class="text-3xl font-bold mb-8">Add New Car</h1>
+    <!-- Hero Section -->
+    <section class="relative bg-gradient-to-r from-blue-600 to-blue-800 text-white overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+            <div class="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full translate-x-1/2 translate-y-1/2"></div>
+        </div>
+        <div class="container mx-auto px-6 py-16 relative">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Add New Car</h1>
+            <p class="text-xl text-blue-100">Add a new car to your inventory</p>
+        </div>
+    </section>
 
-            <div class="bg-white rounded-lg shadow p-8 max-w-3xl">
+    <!-- Content -->
+    <section class="py-12 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="bg-white rounded-xl shadow-lg p-8 max-w-3xl mx-auto">
                 <form action="{{ route('admin.cars.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="grid grid-cols-2 gap-4">
@@ -88,18 +133,25 @@
                             <label class="block text-gray-700 font-semibold mb-2">Condition</label>
                             <input type="text" name="kondisi" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
                         </div>
-                        <div>
+                        <div class="col-span-2">
                             <label class="block text-gray-700 font-semibold mb-2">Image</label>
                             <input type="file" name="image" accept="image/*" class="w-full px-4 py-2 border rounded-lg">
                         </div>
                     </div>
                     <div class="mt-6 flex gap-4">
-                        <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Save Car</button>
-                        <a href="{{ route('admin.cars.index') }}" class="px-6 py-3 bg-gray-300 rounded-lg hover:bg-gray-400">Cancel</a>
+                        <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">Save Car</button>
+                        <a href="{{ route('admin.cars.index') }}" class="px-6 py-3 bg-gray-300 rounded-lg hover:bg-gray-400 font-medium">Cancel</a>
                     </div>
                 </form>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 w-full text-white py-8 mt-12">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2026 E-RentCar. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

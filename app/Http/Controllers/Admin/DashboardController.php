@@ -14,12 +14,14 @@ class DashboardController extends Controller
         $stats = [
             'total_users' => User::where('role', 'user')->count(),
             'pending_users' => User::where('verification_status', 'pending')->count(),
-            'total_cars' => Car::where('Status', 1)->count(),
+            'total_cars' => Car::count(),
             'total_bookings' => Booking::count(),
+            'active_bookings' => Booking::where('booking_status', 'confirmed')->count(),
+            'total_revenue' => Booking::where('payment_status', 'paid')->sum('total_price'),
         ];
 
-        $pending_users = User::where('verification_status', 'pending')->latest('CreatedDate')->take(5)->get();
-        $recent_bookings = Booking::with(['user', 'car'])->latest('CreatedDate')->take(5)->get();
+        $pending_users = User::where('verification_status', 'pending')->latest('id')->take(5)->get();
+        $recent_bookings = Booking::with(['user', 'car'])->latest('id')->take(5)->get();
 
         return view('admin.dashboard', compact('stats', 'pending_users', 'recent_bookings'));
     }

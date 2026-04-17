@@ -21,17 +21,27 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+    Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('auth.google');
+    Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 });
+
+// 2FA Routes (outside guest middleware)
+Route::get('/totp/verify', [AuthController::class, 'showTOTPVerify'])->name('totp.verify');
+Route::post('/totp/verify', [AuthController::class, 'verifyTOTP'])->name('totp.verify.post');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 // User Routes (Login Required)
-Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
-    Route::get('/bookings', [BookingController::class, 'index'])->name('user.bookings');
-    Route::get('/bookings/create/{car}', [BookingController::class, 'create'])->name('bookings.create');
-    Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+Route::middleware(['auth'])->prefix('user')->group(function () {
+    Route::get('/bookings', [BookingController::class, 'index'])->name('user.bookings')->middleware('role:user');
+    Route::get('/bookings/create/{car}', [BookingController::class, 'create'])->name('bookings.create')->middleware('role:user');
+    Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store')->middleware('role:user');
+    
     Route::get('/profile', [ProfileController::class, 'index'])->name('user.profile');
     Route::post('/profile', [ProfileController::class, 'update'])->name('user.profile.update');
+    Route::get('/profile/totp-setup', [ProfileController::class, 'setupTOTP'])->name('user.totp.setup');
+    Route::post('/profile/totp-enable', [ProfileController::class, 'enableTOTP'])->name('user.totp.enable');
+    Route::post('/profile/totp-disable', [ProfileController::class, 'disableTOTP'])->name('user.totp.disable');
 });
 
 // Admin Routes
@@ -39,6 +49,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
+    Route::post('/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
     Route::post('/users/{id}/approve', [UserController::class, 'approve'])->name('admin.users.approve');
     Route::post('/users/{id}/reject', [UserController::class, 'reject'])->name('admin.users.reject');
     

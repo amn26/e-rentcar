@@ -38,4 +38,44 @@ class ProfileController extends Controller
 
         return back()->with('success', 'Profile updated successfully');
     }
+
+    public function setupTOTP()
+    {
+        $user = auth()->user();
+        
+        if (!$user->totp_secret) {
+            $user->totp_secret = \App\Services\TOTPService::generateSecret();
+            $user->save();
+        }
+
+        $qrCodeUrl = \App\Services\TOTPService::getQRCodeUrl($user->email, $user->totp_secret);
+        
+        return view('user.totp-setup', compact('user', 'qrCodeUrl'));
+    }
+
+    public function enableTOTP(Request $request)
+    {
+        $request->validate(['code' => 'required|digits:6']);
+        
+        $user = auth()->user();
+        
+        if (\App\Services\TOTPService::verifyCode($user->totp_secret, $request->code)) {
+            $user->totp_enabled = true;
+            $user->save();
+            
+            return redirect()->route('user.profile')->with('success', 'Authenticator App enabled successfully!');
+        }
+        
+        return back()->with('error', 'Invalid code. Please try again.');
+    }
+
+    public function disableTOTP()
+    {
+        $user = auth()->user();
+        $user->totp_enabled = false;
+        $user->totp_secret = null;
+        $user->save();
+        
+        return back()->with('success', 'Authenticator App disabled successfully');
+    }
 }
