@@ -9,8 +9,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('totp_secret', 32)->nullable()->after('two_factor_expires_at');
-            $table->boolean('totp_enabled')->default(false)->after('totp_secret');
+            $table->string('totp_secret', 32)->nullable();
+            $table->boolean('totp_enabled')->default(false);
         });
     }
 
