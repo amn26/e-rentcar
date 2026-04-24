@@ -102,11 +102,14 @@
                         <p class="text-gray-600 mb-1">{{ $car->brand }} • {{ $car->year }}</p>
                         <p class="text-gray-600 mb-4">{{ $car->plate_number }}</p>
                         <p class="text-2xl font-bold text-blue-600 mb-4">Rp {{ number_format($car->price_per_day, 0, ',', '.') }}<span class="text-sm text-gray-500">/day</span></p>
-                        <form action="{{ route('admin.cars.destroy', $car->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button onclick="return confirm('Are you sure?')" class="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-medium">Delete</button>
-                        </form>
+                        <div class="flex gap-2">
+                            <a href="{{ route('admin.cars.edit', $car->id) }}" class="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium text-center">Edit</a>
+                            <form action="{{ route('admin.cars.destroy', $car->id) }}" method="POST" class="flex-1">
+                                @csrf
+                                @method('DELETE')
+                                <button onclick="return confirm('Are you sure?')" class="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-medium">Delete</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 @empty
@@ -122,9 +125,13 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 w-full text-white py-8 mt-12">
-        <div class="container mx-auto px-6 text-center">
-            <p>&copy; 2026 E-RentCar. All rights reserved.</p>
+    <footer class="bg-gray-900 w-full text-white py-4 mt-12">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-2 text-xs">
+                <span class="font-semibold">E-RentCar</span>
+                <span class="text-gray-400">info@erentcar.com | +62 812-3456-7890</span>
+                <span class="text-gray-400">&copy; 2026 E-RentCar</span>
+            </div>
         </div>
     </footer>
 </body>

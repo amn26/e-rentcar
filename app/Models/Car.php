@@ -13,7 +13,7 @@ class Car extends Model
     protected $fillable = [
         'id', 'name', 'brand', 'year', 'plate_number', 'price_per_day',
         'image', 'stnk_number', 'stnk_expired_date', 'pajak_expired_date',
-        'warna', 'bahan_bakar', 'transmisi', 'kapasitas_penumpang', 'kondisi'
+        'warna', 'bahan_bakar', 'transmisi', 'kapasitas_penumpang', 'kondisi', 'features'
     ];
 
     public function bookings()

@@ -211,9 +211,13 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 w-full text-white py-8 mt-12">
-        <div class="container mx-auto px-6 text-center">
-            <p>&copy; 2026 E-RentCar. All rights reserved.</p>
+    <footer class="bg-gray-900 w-full text-white py-4 mt-12">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-2 text-xs">
+                <span class="font-semibold">E-RentCar</span>
+                <span class="text-gray-400">info@erentcar.com | +62 812-3456-7890</span>
+                <span class="text-gray-400">&copy; 2026 E-RentCar</span>
+            </div>
         </div>
     </footer>
 </body>

@@ -122,30 +122,43 @@
                         <div class="mb-8">
                             <h3 class="text-2xl font-bold mb-4">Features & Benefits</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                    <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span class="text-gray-700">Air Conditioning</span>
-                                </div>
-                                <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                    <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span class="text-gray-700">Insurance Included</span>
-                                </div>
-                                <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                    <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span class="text-gray-700">24/7 Support</span>
-                                </div>
-                                <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                    <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span class="text-gray-700">Free Cancellation</span>
-                                </div>
+                                @if($car->features)
+                                    @foreach(explode("\n", $car->features) as $feature)
+                                        @if(trim($feature))
+                                        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                                            <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                            </svg>
+                                            <span class="text-gray-700">{{ trim($feature) }}</span>
+                                        </div>
+                                        @endif
+                                    @endforeach
+                                @else
+                                    <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                                        <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span class="text-gray-700">Air Conditioning</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                                        <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span class="text-gray-700">Insurance Included</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                                        <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span class="text-gray-700">24/7 Support</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                                        <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span class="text-gray-700">Free Cancellation</span>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -219,9 +232,13 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-8 mt-12">
-        <div class="container mx-auto px-6 text-center">
-            <p>&copy; 2026 E-RentCar. All rights reserved.</p>
+    <footer class="bg-gray-900 text-white py-4 mt-12">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-2 text-xs">
+                <span class="font-semibold">E-RentCar</span>
+                <span class="text-gray-400">info@erentcar.com | +62 812-3456-7890</span>
+                <span class="text-gray-400">&copy; 2026 E-RentCar</span>
+            </div>
         </div>
     </footer>
 </body>

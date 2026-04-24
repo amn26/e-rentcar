@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Car - E-RentCar</title>
+    <title>Edit Car - E-RentCar</title>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -63,8 +63,8 @@
             <div class="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full translate-x-1/2 translate-y-1/2"></div>
         </div>
         <div class="container mx-auto px-6 py-16 relative">
-            <h1 class="text-4xl md:text-5xl font-bold mb-4">Add New Car</h1>
-            <p class="text-xl text-blue-100">Add a new car to your inventory</p>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Edit Car</h1>
+            <p class="text-xl text-blue-100">Update car information</p>
         </div>
     </section>
 
@@ -72,79 +72,86 @@
     <section class="py-12 bg-white">
         <div class="container mx-auto px-6">
             <div class="bg-white rounded-xl shadow-lg p-8 max-w-3xl mx-auto">
-                <form action="{{ route('admin.cars.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.cars.update', $car->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
+                    @method('PUT')
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Car Name</label>
-                            <input type="text" name="name" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                            <input type="text" name="name" value="{{ $car->name }}" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
                         </div>
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Brand</label>
-                            <input type="text" name="brand" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                            <input type="text" name="brand" value="{{ $car->brand }}" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
                         </div>
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Year</label>
-                            <input type="number" name="year" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                            <input type="number" name="year" value="{{ $car->year }}" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
                         </div>
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Plate Number</label>
-                            <input type="text" name="plate_number" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                            <input type="text" name="plate_number" value="{{ $car->plate_number }}" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
                         </div>
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Price Per Day</label>
-                            <input type="number" name="price_per_day" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                            <input type="number" name="price_per_day" value="{{ $car->price_per_day }}" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
                         </div>
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">STNK Number</label>
-                            <input type="text" name="stnk_number" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                            <input type="text" name="stnk_number" value="{{ $car->stnk_number }}" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
                         </div>
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">STNK Expired</label>
-                            <input type="date" name="stnk_expired_date" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                            <input type="date" name="stnk_expired_date" value="{{ $car->stnk_expired_date }}" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
                         </div>
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Pajak Expired</label>
-                            <input type="date" name="pajak_expired_date" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                            <input type="date" name="pajak_expired_date" value="{{ $car->pajak_expired_date }}" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
                         </div>
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Color</label>
-                            <input type="text" name="warna" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                            <input type="text" name="warna" value="{{ $car->warna }}" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
                         </div>
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Fuel Type</label>
                             <select name="bahan_bakar" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
-                                <option value="Bensin">Bensin</option>
-                                <option value="Diesel">Diesel</option>
+                                <option value="Bensin" {{ $car->bahan_bakar == 'Bensin' ? 'selected' : '' }}>Bensin</option>
+                                <option value="Diesel" {{ $car->bahan_bakar == 'Diesel' ? 'selected' : '' }}>Diesel</option>
                             </select>
                         </div>
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Transmission</label>
                             <select name="transmisi" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
-                                <option value="Automatic">Automatic</option>
-                                <option value="Manual">Manual</option>
+                                <option value="Automatic" {{ $car->transmisi == 'Automatic' ? 'selected' : '' }}>Automatic</option>
+                                <option value="Manual" {{ $car->transmisi == 'Manual' ? 'selected' : '' }}>Manual</option>
                             </select>
                         </div>
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Capacity</label>
-                            <input type="number" name="kapasitas_penumpang" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                            <input type="number" name="kapasitas_penumpang" value="{{ $car->kapasitas_penumpang }}" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
                         </div>
                         <div>
                             <label class="block text-gray-700 font-semibold mb-2">Condition</label>
-                            <input type="text" name="kondisi" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                            <input type="text" name="kondisi" value="{{ $car->kondisi }}" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
                         </div>
                         <div class="col-span-2">
                             <label class="block text-gray-700 font-semibold mb-2">Features & Benefits</label>
-                            <textarea name="features" rows="4" placeholder="Air Conditioning&#10;Insurance Included&#10;24/7 Support&#10;Free Cancellation" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"></textarea>
+                            <textarea name="features" rows="4" placeholder="Air Conditioning&#10;Insurance Included&#10;24/7 Support&#10;Free Cancellation" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">{{ $car->features }}</textarea>
                             <p class="text-sm text-gray-500 mt-1">Enter each feature on a new line</p>
                         </div>
                         <div class="col-span-2">
                             <label class="block text-gray-700 font-semibold mb-2">Image</label>
+                            @if($car->image)
+                                <div class="mb-2">
+                                    <img src="{{ asset('storage/' . $car->image) }}" alt="{{ $car->name }}" class="h-32 rounded-lg">
+                                    <p class="text-sm text-gray-500 mt-1">Current image (leave empty to keep)</p>
+                                </div>
+                            @endif
                             <input type="file" name="image" accept="image/*" class="w-full px-4 py-2 border rounded-lg">
                         </div>
                     </div>
                     <div class="mt-6 flex gap-4">
-                        <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">Save Car</button>
+                        <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">Update Car</button>
                         <a href="{{ route('admin.cars.index') }}" class="px-6 py-3 bg-gray-300 rounded-lg hover:bg-gray-400 font-medium">Cancel</a>
                     </div>
                 </form>

@@ -22,13 +22,12 @@ class CarController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|max:50',
             'brand' => 'required|max:50',
             'year' => 'required|integer',
             'plate_number' => 'required|unique:cars',
             'price_per_day' => 'required|numeric',
-            'image' => 'nullable|image|max:2048',
             'stnk_number' => 'required',
             'stnk_expired_date' => 'required|date',
             'pajak_expired_date' => 'required|date',
@@ -39,13 +38,19 @@ class CarController extends Controller
             'kondisi' => 'required',
         ]);
 
+        $data = $request->except('image');
+
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('cars', 'public');
+            $errors = \App\Services\ImageValidator::validate($request->file('image'));
+            if (!empty($errors)) {
+                return back()->withErrors(['image' => implode(' ', $errors)])->withInput();
+            }
+            $data['image'] = \App\Services\ImageValidator::store($request->file('image'));
         }
 
-        $validated['id'] = 'CAR' . strtoupper(Str::random(7));
+        $data['id'] = 'CAR' . strtoupper(Str::random(7));
 
-        Car::create($validated);
+        Car::create($data);
 
         return redirect()->route('admin.cars.index')->with('success', 'Car added successfully');
     }
@@ -55,5 +60,50 @@ class CarController extends Controller
         $car = Car::findOrFail($id);
         $car->update(['IsDeleted' => 1]);
         return back()->with('success', 'Car deleted successfully');
+    }
+
+    public function edit($id)
+    {
+        $car = Car::findOrFail($id);
+        return view('admin.cars.edit', compact('car'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $car = Car::findOrFail($id);
+        
+        $request->validate([
+            'name' => 'required|max:50',
+            'brand' => 'required|max:50',
+            'year' => 'required|integer',
+            'plate_number' => 'required|unique:cars,plate_number,' . $id . ',id',
+            'price_per_day' => 'required|numeric',
+            'stnk_number' => 'required',
+            'stnk_expired_date' => 'required|date',
+            'pajak_expired_date' => 'required|date',
+            'warna' => 'required',
+            'bahan_bakar' => 'required',
+            'transmisi' => 'required',
+            'kapasitas_penumpang' => 'required|integer',
+            'kondisi' => 'required',
+        ]);
+
+        $data = $request->except('image');
+
+        if ($request->hasFile('image')) {
+            $errors = \App\Services\ImageValidator::validate($request->file('image'));
+            if (!empty($errors)) {
+                return back()->withErrors(['image' => implode(' ', $errors)])->withInput();
+            }
+            
+            if ($car->image && file_exists(storage_path('app/public/' . $car->image))) {
+                unlink(storage_path('app/public/' . $car->image));
+            }
+            $data['image'] = \App\Services\ImageValidator::store($request->file('image'));
+        }
+
+        $car->update($data);
+
+        return redirect()->route('admin.cars.index')->with('success', 'Car updated successfully');
     }
 }
