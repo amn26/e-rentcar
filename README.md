@@ -11,6 +11,10 @@ Aplikasi rental mobil online berbasis Laravel dengan Tailwind CSS dan fitur keam
 - ✅ KTP & SIM Verification
 - ✅ Car Browsing with Search & Filter
 - ✅ Car Booking System with Auto Calculate
+- ✅ **Booking Lock System (10-minute timeout)**
+- ✅ **Real-time Availability Check**
+- ✅ **Auto-Release Expired Bookings**
+- ✅ **Edit & Cancel Booking (CRUD)**
 - ✅ User Profile Management
 - ✅ Booking History
 - ⏳ Payment Integration (Midtrans) - Coming Soon

@@ -47,6 +47,10 @@ class HomeController extends Controller
         }
 
         $cars = $query->get();
-        return view('home', compact('cars'));
+        
+        // Check availability for date filter
+        $filterDate = $request->filter_date ?? now()->format('Y-m-d');
+        
+        return view('home', compact('cars', 'filterDate'));
     }
 }

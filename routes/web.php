@@ -15,6 +15,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/cars/{id}', [CarController::class, 'show'])->name('cars.show');
 
+// Midtrans Notification (no auth required)
+Route::post('/payment/notification', [App\Http\Controllers\PaymentController::class, 'callback'])->name('payment.notification');
+
+// Payment Redirect Routes (must be before {booking} route)
+Route::get('/payment/finish', [App\Http\Controllers\PaymentController::class, 'finish'])->name('payment.finish');
+Route::get('/payment/unfinish', [App\Http\Controllers\PaymentController::class, 'unfinish'])->name('payment.unfinish');
+Route::get('/payment/error', [App\Http\Controllers\PaymentController::class, 'error'])->name('payment.error');
+
+// Payment Show Route
+Route::get('/payment/{booking}', [App\Http\Controllers\PaymentController::class, 'show'])->name('payment.show');
+
 // Auth Routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -36,6 +47,9 @@ Route::middleware(['auth'])->prefix('user')->group(function () {
     Route::get('/bookings', [BookingController::class, 'index'])->name('user.bookings')->middleware('role:user');
     Route::get('/bookings/create/{car}', [BookingController::class, 'create'])->name('bookings.create')->middleware('role:user');
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store')->middleware('role:user');
+    Route::get('/bookings/{id}/edit', [BookingController::class, 'edit'])->name('user.bookings.edit')->middleware('role:user');
+    Route::put('/bookings/{id}', [BookingController::class, 'update'])->name('user.bookings.update')->middleware('role:user');
+    Route::delete('/bookings/{id}', [BookingController::class, 'destroy'])->name('user.bookings.destroy')->middleware('role:user');
     
     Route::get('/profile', [ProfileController::class, 'index'])->name('user.profile');
     Route::post('/profile', [ProfileController::class, 'update'])->name('user.profile.update');

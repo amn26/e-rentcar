@@ -85,6 +85,40 @@
                                 @else bg-orange-100 text-orange-700 @endif">
                                 {{ ucfirst($booking->payment_status) }}
                             </span>
+                            
+                            @if($booking->payment_status == 'unpaid' && $booking->booking_status == 'pending')
+                                <div class="mt-2 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                                    <p class="text-xs text-yellow-800 font-semibold mb-1">⏰ Payment expires in:</p>
+                                    <p class="text-lg font-bold text-yellow-900 countdown" data-expires="{{ $booking->payment_expires_at }}">
+                                        Calculating...
+                                    </p>
+                                </div>
+                                <a href="{{ route('payment.show', $booking->id) }}" 
+                                   class="block mt-3 bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-3 rounded-xl hover:from-green-700 hover:to-green-800 font-bold text-lg text-center transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                                    </svg>
+                                    PAY NOW
+                                </a>
+                            @endif
+                            
+                            @if($booking->booking_status == 'pending')
+                                <div class="flex gap-2 mt-3">
+                                    <a href="{{ route('user.bookings.edit', $booking->id) }}" 
+                                       class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm font-semibold text-center transition">
+                                        Edit
+                                    </a>
+                                    <form action="{{ route('user.bookings.destroy', $booking->id) }}" method="POST" 
+                                          onsubmit="return confirm('Are you sure you want to cancel this booking?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                                class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm font-semibold transition">
+                                            Cancel
+                                        </button>
+                                    </form>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -111,5 +145,30 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        function updateCountdowns() {
+            const countdowns = document.querySelectorAll('.countdown');
+            
+            countdowns.forEach(countdown => {
+                const expiresAt = new Date(countdown.dataset.expires).getTime();
+                const now = new Date().getTime();
+                const distance = expiresAt - now;
+                
+                if (distance < 0) {
+                    countdown.textContent = 'EXPIRED';
+                    countdown.classList.add('text-red-600');
+                } else {
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    countdown.textContent = minutes + 'm ' + seconds + 's';
+                }
+            });
+        }
+        
+        // Update every second
+        updateCountdowns();
+        setInterval(updateCountdowns, 1000);
+    </script>
 </body>
 </html>

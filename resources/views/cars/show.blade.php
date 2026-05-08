@@ -47,7 +47,10 @@
                 
                 <!-- Status Badge -->
                 <div class="absolute top-6 right-6">
-                    @if($car->isAvailable())
+                    @php
+                        $isAvailableToday = $car->isAvailableForDate(now()->format('Y-m-d'));
+                    @endphp
+                    @if($isAvailableToday)
                         <span class="px-4 py-2 bg-green-500 text-white rounded-full font-bold shadow-lg flex items-center gap-2">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
@@ -55,11 +58,11 @@
                             Available
                         </span>
                     @else
-                        <span class="px-4 py-2 bg-red-500 text-white rounded-full font-bold shadow-lg flex items-center gap-2">
+                        <span class="px-4 py-2 bg-red-600 text-white rounded-full font-bold shadow-lg flex items-center gap-2">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
                             </svg>
-                            Not Available
+                            Booked
                         </span>
                     @endif
                 </div>
@@ -176,16 +179,14 @@
 
                             @auth
                                 @if(auth()->user()->isVerified())
-                                    @if($car->isAvailable())
-                                        <a href="{{ route('bookings.create', $car->id) }}" 
-                                           class="block w-full text-center bg-blue-600 text-white py-4 rounded-xl hover:bg-blue-700 font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition">
-                                            Book Now
-                                        </a>
-                                    @else
-                                        <button disabled 
-                                                class="block w-full text-center bg-gray-400 text-white py-4 rounded-xl cursor-not-allowed font-bold text-lg">
-                                            Not Available
-                                        </button>
+                                    <a href="{{ route('bookings.create', $car->id) }}" 
+                                       class="block w-full text-center bg-blue-600 text-white py-4 rounded-xl hover:bg-blue-700 font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition">
+                                        Book Now
+                                    </a>
+                                    @if(!$isAvailableToday)
+                                        <p class="text-sm text-orange-600 text-center mt-2">
+                                            ⚠️ Booked today, but other dates may be available
+                                        </p>
                                     @endif
                                 @else
                                     <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded mb-4">

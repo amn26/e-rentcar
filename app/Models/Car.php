@@ -25,4 +25,41 @@ class Car extends Model
     {
         return $this->Status == 1 && $this->IsDeleted == 0;
     }
+
+    public function isAvailableForDates($startDate, $endDate, $excludeBookingId = null)
+    {
+        if (!$this->isAvailable()) {
+            return false;
+        }
+
+        $query = $this->bookings()
+            ->whereIn('booking_status', ['pending', 'confirmed'])
+            ->where(function ($q) use ($startDate, $endDate) {
+                $q->whereBetween('start_date', [$startDate, $endDate])
+                  ->orWhereBetween('end_date', [$startDate, $endDate])
+                  ->orWhere(function ($q2) use ($startDate, $endDate) {
+                      $q2->where('start_date', '<=', $startDate)
+                         ->where('end_date', '>=', $endDate);
+                  });
+            });
+
+        if ($excludeBookingId) {
+            $query->where('id', '!=', $excludeBookingId);
+        }
+
+        return $query->count() === 0;
+    }
+
+    public function isAvailableForDate($date)
+    {
+        if (!$this->isAvailable()) {
+            return false;
+        }
+
+        return $this->bookings()
+            ->whereIn('booking_status', ['pending', 'confirmed'])
+            ->where('start_date', '<=', $date)
+            ->where('end_date', '>=', $date)
+            ->count() === 0;
+    }
 }

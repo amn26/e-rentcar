@@ -6,6 +6,18 @@
     <title>Book {{ $car->name }} - E-RentCar</title>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        .flatpickr-day.disabled {
+            color: rgba(57,57,57,0.3) !important;
+            background: #f3f4f6 !important;
+            cursor: not-allowed !important;
+        }
+        .flatpickr-day.disabled:hover {
+            background: #f3f4f6 !important;
+            border-color: transparent !important;
+        }
+    </style>
 </head>
 <body class="bg-gray-50">
     <!-- Navbar -->
@@ -83,17 +95,17 @@
 
                             <div class="mb-4">
                                 <label class="block text-gray-700 font-semibold mb-2">Start Date</label>
-                                <input type="date" name="start_date" id="start_date" required 
+                                <input type="text" name="start_date" id="start_date" required 
                                     class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-                                    min="{{ date('Y-m-d') }}" onchange="calculateTotal()">
-                        </div>
+                                    placeholder="Select start date" readonly>
+                            </div>
 
-                        <div class="mb-4">
-                            <label class="block text-gray-700 font-semibold mb-2">End Date</label>
-                            <input type="date" name="end_date" id="end_date" required 
-                                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-                                min="{{ date('Y-m-d') }}" onchange="calculateTotal()">
-                        </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 font-semibold mb-2">End Date</label>
+                                <input type="text" name="end_date" id="end_date" required 
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                                    placeholder="Select end date" readonly>
+                            </div>
 
                         <div class="bg-blue-50 rounded-lg p-4 mb-6">
                             <div class="flex justify-between mb-2">
@@ -131,22 +143,60 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         const pricePerDay = {{ $car->price_per_day }};
+        const bookedDates = @json($bookedDates);
+        
+        const startDatePicker = flatpickr("#start_date", {
+            minDate: "today",
+            dateFormat: "Y-m-d",
+            disable: bookedDates,
+            onChange: function(selectedDates, dateStr) {
+                endDatePicker.set('minDate', dateStr);
+                endDatePicker.clear();
+                calculateTotal();
+            }
+        });
+
+        const endDatePicker = flatpickr("#end_date", {
+            minDate: "today",
+            dateFormat: "Y-m-d",
+            disable: bookedDates,
+            onChange: function() {
+                calculateTotal();
+            }
+        });
 
         function calculateTotal() {
-            const startDate = new Date(document.getElementById('start_date').value);
-            const endDate = new Date(document.getElementById('end_date').value);
+            const startDate = document.getElementById('start_date').value;
+            const endDate = document.getElementById('end_date').value;
 
-            if (startDate && endDate && endDate > startDate) {
-                const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-                const total = days * pricePerDay;
+            if (startDate && endDate) {
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                
+                if (end > start) {
+                    const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+                    const total = days * pricePerDay;
 
-                document.getElementById('total_days').textContent = days;
-                document.getElementById('total_price').textContent = 'Rp ' + total.toLocaleString('id-ID');
-                document.getElementById('total_days_input').value = days;
-                document.getElementById('total_price_input').value = total;
+                    document.getElementById('total_days').textContent = days;
+                    document.getElementById('total_price').textContent = 'Rp ' + total.toLocaleString('id-ID');
+                    document.getElementById('total_days_input').value = days;
+                    document.getElementById('total_price_input').value = total;
+                } else {
+                    resetTotal();
+                }
+            } else {
+                resetTotal();
             }
+        }
+
+        function resetTotal() {
+            document.getElementById('total_days').textContent = '0';
+            document.getElementById('total_price').textContent = 'Rp 0';
+            document.getElementById('total_days_input').value = '';
+            document.getElementById('total_price_input').value = '';
         }
     </script>
 </body>

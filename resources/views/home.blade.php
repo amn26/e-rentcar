@@ -226,34 +226,47 @@
             <!-- Search & Filter -->
             <div class="bg-white rounded-2xl shadow-xl p-6 mb-10 border border-gray-100">
                 <form method="GET" action="{{ route('home') }}">
-                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
                         <div>
-                            <input type="text" name="search" value="{{ request('search') }}" placeholder="🔍 Cari mobil atau brand..." class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Tanggal</label>
+                            <input type="date" name="filter_date" value="{{ request('filter_date', $filterDate) }}" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         </div>
                         <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Cari Mobil</label>
+                            <input type="text" name="search" value="{{ request('search') }}" placeholder="🔍 Nama/Brand..." class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Transmisi</label>
                             <select name="transmisi" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                <option value="">Semua Transmisi</option>
+                                <option value="">Semua</option>
                                 <option value="Automatic" {{ request('transmisi') == 'Automatic' ? 'selected' : '' }}>Automatic</option>
                                 <option value="Manual" {{ request('transmisi') == 'Manual' ? 'selected' : '' }}>Manual</option>
                             </select>
                         </div>
                         <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Kapasitas</label>
                             <select name="kapasitas" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                <option value="">Semua Kapasitas</option>
-                                <option value="5" {{ request('kapasitas') == '5' ? 'selected' : '' }}>5 Penumpang</option>
-                                <option value="7" {{ request('kapasitas') == '7' ? 'selected' : '' }}>7 Penumpang</option>
+                                <option value="">Semua</option>
+                                <option value="5" {{ request('kapasitas') == '5' ? 'selected' : '' }}>5 Kursi</option>
+                                <option value="7" {{ request('kapasitas') == '7' ? 'selected' : '' }}>7 Kursi</option>
                             </select>
                         </div>
                         <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Urutkan</label>
                             <select name="sort" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                <option value="">Urutkan</option>
-                                <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Harga: Rendah ke Tinggi</option>
-                                <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Harga: Tinggi ke Rendah</option>
+                                <option value="">Default</option>
+                                <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Harga ↑</option>
+                                <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Harga ↓</option>
                                 <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Terbaru</option>
                             </select>
                         </div>
                         <div class="flex gap-2">
-                            <button type="submit" class="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 font-semibold transition-all shadow-lg hover:shadow-xl">Cari</button>
+                            <button type="submit" class="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 font-semibold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                                Cari
+                            </button>
                             <a href="{{ route('home') }}" class="px-4 py-3 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all flex items-center justify-center">
                                 <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
@@ -264,8 +277,22 @@
                 </form>
             </div>
             
+            @if(request('filter_date'))
+            <div class="mb-6 text-center">
+                <span class="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-6 py-3 rounded-xl font-semibold">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                    </svg>
+                    Menampilkan ketersediaan untuk tanggal: {{ \Carbon\Carbon::parse($filterDate)->format('d F Y') }}
+                </span>
+            </div>
+            @endif
+            
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @forelse($cars as $car)
+                @php
+                    $isAvailable = $car->isAvailableForDate($filterDate);
+                @endphp
                 <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group border border-gray-100">
                     <div class="relative h-56 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
                         @if($car->image)
@@ -278,7 +305,11 @@
                                 </svg>
                             </div>
                         @endif
-                        <div class="absolute top-4 right-4 bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg">✓ Tersedia</div>
+                        @if($isAvailable)
+                            <div class="absolute top-4 right-4 bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg">✓ Available</div>
+                        @else
+                            <div class="absolute top-4 right-4 bg-gradient-to-r from-red-600 to-red-700 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg">✗ Booked</div>
+                        @endif
                     </div>
                     <div class="p-6">
                         <h3 class="text-xl font-bold mb-3 text-gray-800 group-hover:text-blue-600 transition-colors">{{ $car->name }}</h3>
