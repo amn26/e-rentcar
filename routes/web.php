@@ -18,6 +18,9 @@ Route::get('/cars/{id}', [CarController::class, 'show'])->name('cars.show');
 // Midtrans Notification (no auth required)
 Route::post('/payment/notification', [App\Http\Controllers\PaymentController::class, 'callback'])->name('payment.notification');
 
+// API for booked dates
+Route::get('/api/cars/{id}/booked-dates', [CarController::class, 'getBookedDates']);
+
 // Payment Redirect Routes (must be before {booking} route)
 Route::get('/payment/finish', [App\Http\Controllers\PaymentController::class, 'finish'])->name('payment.finish');
 Route::get('/payment/unfinish', [App\Http\Controllers\PaymentController::class, 'unfinish'])->name('payment.unfinish');

@@ -51,28 +51,48 @@
                 @endif
 
                 <div class="bg-white rounded-xl shadow-lg p-8">
-                    <div class="flex gap-6 mb-8 pb-8 border-b">
-                        <div class="w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
-                            @if($booking->car->image)
-                                <img src="{{ asset('storage/' . $booking->car->image) }}" alt="{{ $booking->car->name }}" class="w-full h-full object-cover rounded-lg">
-                            @else
-                                <svg class="w-16 h-16 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <!-- Car Selection -->
+                    <div class="mb-8 pb-8 border-b">
+                        <label class="block text-gray-700 font-semibold mb-4">Select Car</label>
+                        <select name="car_id" id="car_id" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-4" required>
+                            @foreach($cars as $car)
+                                <option value="{{ $car->id }}" 
+                                    data-price="{{ $car->price_per_day }}"
+                                    data-image="{{ $car->image ? asset('storage/' . $car->image) : '' }}"
+                                    data-name="{{ $car->name }}"
+                                    data-brand="{{ $car->brand }}"
+                                    data-year="{{ $car->year }}"
+                                    data-transmisi="{{ $car->transmisi }}"
+                                    data-kapasitas="{{ $car->kapasitas_penumpang }}"
+                                    {{ $car->id == $booking->car_id ? 'selected' : '' }}>
+                                    {{ $car->name }} - {{ $car->brand }} (Rp {{ number_format($car->price_per_day, 0, ',', '.') }}/day)
+                                </option>
+                            @endforeach
+                        </select>
+
+                        <!-- Car Preview -->
+                        <div class="flex gap-6" id="carPreview">
+                            <div class="w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <img id="carImage" src="{{ $booking->car->image ? asset('storage/' . $booking->car->image) : '' }}" alt="" class="w-full h-full object-cover rounded-lg {{ $booking->car->image ? '' : 'hidden' }}">
+                                <svg id="carPlaceholder" class="w-16 h-16 text-gray-400 {{ $booking->car->image ? 'hidden' : '' }}" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/>
                                     <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z"/>
                                 </svg>
-                            @endif
-                        </div>
-                        <div>
-                            <h2 class="text-2xl font-bold mb-2">{{ $booking->car->name }}</h2>
-                            <p class="text-gray-600 mb-1">{{ $booking->car->brand }} • {{ $booking->car->year }}</p>
-                            <p class="text-gray-600 mb-1">{{ ucfirst($booking->car->transmisi) }} • {{ $booking->car->kapasitas_penumpang }} Seats</p>
-                            <p class="text-2xl font-bold text-blue-600 mt-2">Rp {{ number_format($booking->car->price_per_day, 0, ',', '.') }}/day</p>
+                            </div>
+                            <div>
+                                <h2 id="carName" class="text-2xl font-bold mb-2">{{ $booking->car->name }}</h2>
+                                <p id="carDetails" class="text-gray-600 mb-1">{{ $booking->car->brand }} • {{ $booking->car->year }}</p>
+                                <p id="carSpecs" class="text-gray-600 mb-1">{{ ucfirst($booking->car->transmisi) }} • {{ $booking->car->kapasitas_penumpang }} Seats</p>
+                                <p id="carPrice" class="text-2xl font-bold text-blue-600 mt-2">Rp {{ number_format($booking->car->price_per_day, 0, ',', '.') }}/day</p>
+                            </div>
                         </div>
                     </div>
 
                     <form action="{{ route('user.bookings.update', $booking->id) }}" method="POST" id="bookingForm">
                         @csrf
                         @method('PUT')
+                        
+                        <input type="hidden" name="car_id" id="selectedCarId" value="{{ $booking->car_id }}">
                         
                         <div class="grid md:grid-cols-2 gap-6 mb-6">
                             <div>
@@ -121,29 +141,83 @@
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-        const pricePerDay = {{ $booking->car->price_per_day }};
-        const bookedDates = @json($bookedDates);
+        let pricePerDay = {{ $booking->car->price_per_day }};
+        let currentCarId = '{{ $booking->car_id }}';
+        let bookedDates = [];
+        let startDatePicker, endDatePicker;
 
-        const startDatePicker = flatpickr("#start_date", {
-            minDate: "today",
-            dateFormat: "Y-m-d",
-            defaultDate: "{{ $booking->start_date->format('Y-m-d') }}",
-            disable: bookedDates,
-            onChange: function(selectedDates, dateStr) {
-                endDatePicker.set('minDate', dateStr);
-                calculateTotal();
+        // Car selection change
+        document.getElementById('car_id').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            currentCarId = this.value;
+            pricePerDay = parseInt(selectedOption.dataset.price);
+            
+            // Update hidden input
+            document.getElementById('selectedCarId').value = currentCarId;
+            
+            // Update preview
+            const image = selectedOption.dataset.image;
+            const carImage = document.getElementById('carImage');
+            const carPlaceholder = document.getElementById('carPlaceholder');
+            
+            if (image) {
+                carImage.src = image;
+                carImage.classList.remove('hidden');
+                carPlaceholder.classList.add('hidden');
+            } else {
+                carImage.classList.add('hidden');
+                carPlaceholder.classList.remove('hidden');
             }
+            
+            document.getElementById('carName').textContent = selectedOption.dataset.name;
+            document.getElementById('carDetails').textContent = selectedOption.dataset.brand + ' • ' + selectedOption.dataset.year;
+            document.getElementById('carSpecs').textContent = selectedOption.dataset.transmisi.charAt(0).toUpperCase() + selectedOption.dataset.transmisi.slice(1) + ' • ' + selectedOption.dataset.kapasitas + ' Seats';
+            document.getElementById('carPrice').textContent = 'Rp ' + parseInt(selectedOption.dataset.price).toLocaleString('id-ID') + '/day';
+            
+            // Fetch booked dates for new car
+            fetchBookedDates();
         });
 
-        const endDatePicker = flatpickr("#end_date", {
-            minDate: "{{ $booking->start_date->format('Y-m-d') }}",
-            dateFormat: "Y-m-d",
-            defaultDate: "{{ $booking->end_date->format('Y-m-d') }}",
-            disable: bookedDates,
-            onChange: function() {
-                calculateTotal();
-            }
-        });
+        function fetchBookedDates() {
+            fetch(`{{ url('/api/cars') }}/${currentCarId}/booked-dates?exclude={{ $booking->id }}`)
+                .then(response => response.json())
+                .then(data => {
+                    bookedDates = data;
+                    updateDatePickers();
+                    calculateTotal();
+                })
+                .catch(error => {
+                    console.error('Error fetching booked dates:', error);
+                    bookedDates = [];
+                    updateDatePickers();
+                });
+        }
+
+        function updateDatePickers() {
+            if (startDatePicker) startDatePicker.destroy();
+            if (endDatePicker) endDatePicker.destroy();
+
+            startDatePicker = flatpickr("#start_date", {
+                minDate: "today",
+                dateFormat: "Y-m-d",
+                defaultDate: "{{ $booking->start_date->format('Y-m-d') }}",
+                disable: bookedDates,
+                onChange: function(selectedDates, dateStr) {
+                    endDatePicker.set('minDate', dateStr);
+                    calculateTotal();
+                }
+            });
+
+            endDatePicker = flatpickr("#end_date", {
+                minDate: "{{ $booking->start_date->format('Y-m-d') }}",
+                dateFormat: "Y-m-d",
+                defaultDate: "{{ $booking->end_date->format('Y-m-d') }}",
+                disable: bookedDates,
+                onChange: function() {
+                    calculateTotal();
+                }
+            });
+        }
 
         function calculateTotal() {
             const startDate = document.getElementById('start_date').value;
@@ -165,6 +239,9 @@
                 }
             }
         }
+
+        // Initialize
+        fetchBookedDates();
     </script>
 </body>
 </html>

@@ -115,27 +115,10 @@ class BookingController extends Controller
             return redirect()->route('user.bookings')->with('error', 'Only pending bookings can be edited.');
         }
 
-        // Get booked dates excluding current booking
-        $bookedDates = Booking::where('car_id', $booking->car_id)
-            ->where('id', '!=', $booking->id)
-            ->whereIn('booking_status', ['pending', 'confirmed'])
-            ->get()
-            ->flatMap(function($booking) {
-                $dates = [];
-                $start = \Carbon\Carbon::parse($booking->start_date);
-                $end = \Carbon\Carbon::parse($booking->end_date);
-                
-                while ($start->lte($end)) {
-                    $dates[] = $start->format('Y-m-d');
-                    $start->addDay();
-                }
-                return $dates;
-            })
-            ->unique()
-            ->values()
-            ->toArray();
+        // Get all available cars
+        $cars = Car::where('status', 1)->get();
 
-        return view('bookings.edit', compact('booking', 'bookedDates'));
+        return view('bookings.edit', compact('booking', 'cars'));
     }
 
     public function update(Request $request, $id)
@@ -156,6 +139,7 @@ class BookingController extends Controller
         }
 
         $validated = $request->validate([
+            'car_id' => 'required|exists:cars,id',
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after:start_date',
             'total_days' => 'required|integer|min:1',
@@ -163,12 +147,13 @@ class BookingController extends Controller
         ]);
 
         // Check availability excluding current booking
-        $car = $booking->car;
+        $car = Car::findOrFail($validated['car_id']);
         if (!$car->isAvailableForDates($validated['start_date'], $validated['end_date'], $booking->id)) {
             return back()->with('error', 'Car is not available for selected dates.');
         }
 
         $booking->update([
+            'car_id' => $validated['car_id'],
             'start_date' => $validated['start_date'],
             'end_date' => $validated['end_date'],
             'total_days' => $validated['total_days'],
