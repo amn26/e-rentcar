@@ -119,6 +119,16 @@
                                     </form>
                                 </div>
                             @endif
+                            
+                            @if($booking->payment_status == 'paid')
+                                <a href="{{ route('user.bookings.receipt', $booking->id) }}" 
+                                   class="block mt-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 font-bold text-center transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    View Receipt
+                                </a>
+                            @endif
                         </div>
                     </div>
                 </div>

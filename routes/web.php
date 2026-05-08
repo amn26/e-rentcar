@@ -50,6 +50,7 @@ Route::middleware(['auth'])->prefix('user')->group(function () {
     Route::get('/bookings/{id}/edit', [BookingController::class, 'edit'])->name('user.bookings.edit')->middleware('role:user');
     Route::put('/bookings/{id}', [BookingController::class, 'update'])->name('user.bookings.update')->middleware('role:user');
     Route::delete('/bookings/{id}', [BookingController::class, 'destroy'])->name('user.bookings.destroy')->middleware('role:user');
+    Route::get('/bookings/{id}/receipt', [BookingController::class, 'receipt'])->name('user.bookings.receipt')->middleware('role:user');
     
     Route::get('/profile', [ProfileController::class, 'index'])->name('user.profile');
     Route::post('/profile', [ProfileController::class, 'update'])->name('user.profile.update');

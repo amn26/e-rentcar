@@ -203,4 +203,24 @@ class BookingController extends Controller
 
         return redirect()->route('user.bookings')->with('success', 'Booking cancelled successfully.');
     }
+
+    public function receipt($id)
+    {
+        if (!auth()->check()) {
+            $user = \App\Models\User::where('role', 'user')->first();
+            auth()->login($user);
+        }
+
+        $booking = Booking::with(['car', 'user'])->findOrFail($id);
+        
+        if ($booking->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        if ($booking->payment_status !== 'paid') {
+            return back()->with('error', 'Receipt only available for paid bookings.');
+        }
+
+        return view('bookings.receipt', compact('booking'));
+    }
 }
