@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\Auditable;
 
 class Booking extends Model
 {
+    use Auditable;
+
     public $incrementing = false;
     public $timestamps = false;
     protected $keyType = 'string';
@@ -16,7 +19,7 @@ class Booking extends Model
     protected $fillable = [
         'id', 'user_id', 'car_id', 'start_date', 'end_date',
         'total_days', 'total_price', 'booking_status', 'payment_status', 'payment_expires_at', 'snap_token',
-        'CreatedDate', 'CreatedBy', 'LastUpdatedDate', 'LastUpdatedBy'
+        'CreatedDate', 'CreatedBy', 'LastUpdatedDate', 'LastUpdatedBy', 'IsDeleted'
     ];
 
     protected $casts = [

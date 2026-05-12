@@ -108,7 +108,7 @@
                     </div>
                     <div class="grid grid-cols-3 gap-6 mt-12">
                         <div>
-                            <div class="text-3xl font-bold mb-1">{{ $cars->count() }}+</div>
+                            <div class="text-3xl font-bold mb-1">{{ $cars->count() }}</div>
                             <div class="text-blue-100 text-sm">Mobil Tersedia</div>
                         </div>
                         <div>

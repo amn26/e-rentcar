@@ -17,7 +17,11 @@ class BookingController extends Controller
             auth()->login($user);
         }
         
-        $bookings = auth()->user()->bookings()->with('car')->orderBy('CreatedDate', 'desc')->get();
+        $bookings = auth()->user()->bookings()
+            ->where('IsDeleted', 0)
+            ->with('car')
+            ->orderBy('CreatedDate', 'desc')
+            ->get();
         return view('bookings.index', compact('bookings'));
     }
 
@@ -177,10 +181,32 @@ class BookingController extends Controller
             abort(403);
         }
 
+        // Soft delete - set IsDeleted to 1
+        $booking->update([
+            'IsDeleted' => 1,
+        ]);
+
+        return redirect()->route('user.bookings')->with('success', 'Booking deleted successfully.');
+    }
+
+    public function cancel($id)
+    {
+        if (!auth()->check()) {
+            $user = \App\Models\User::where('role', 'user')->first();
+            auth()->login($user);
+        }
+
+        $booking = Booking::findOrFail($id);
+        
+        if ($booking->user_id !== auth()->id()) {
+            abort(403);
+        }
+
         if ($booking->booking_status !== 'pending') {
             return back()->with('error', 'Only pending bookings can be cancelled.');
         }
 
+        // Cancel booking - change status only
         $booking->update([
             'booking_status' => 'cancelled',
             'payment_status' => 'cancelled',

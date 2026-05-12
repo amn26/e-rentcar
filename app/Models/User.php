@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Traits\Auditable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, Auditable;
 
     public $incrementing = false;
     public $timestamps = false;
@@ -17,7 +18,8 @@ class User extends Authenticatable
     protected $fillable = [
         'id', 'name', 'email', 'password', 'role', 'phone', 'address',
         'ktp_image', 'sim_image', 'verification_status',
-        'totp_secret', 'totp_enabled'
+        'totp_secret', 'totp_enabled',
+        'CreatedBy', 'CreatedDate', 'LastUpdatedBy', 'LastUpdatedDate', 'Status', 'IsDeleted'
     ];
 
     protected $hidden = ['password'];

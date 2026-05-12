@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\Auditable;
 
 class Car extends Model
 {
+    use Auditable;
+
     public $incrementing = false;
     public $timestamps = false;
     protected $keyType = 'string';
@@ -13,7 +16,8 @@ class Car extends Model
     protected $fillable = [
         'id', 'name', 'brand', 'year', 'plate_number', 'price_per_day',
         'image', 'stnk_number', 'stnk_expired_date', 'pajak_expired_date',
-        'warna', 'bahan_bakar', 'transmisi', 'kapasitas_penumpang', 'kondisi', 'features'
+        'warna', 'bahan_bakar', 'transmisi', 'kapasitas_penumpang', 'kondisi', 'features',
+        'CreatedBy', 'CreatedDate', 'LastUpdatedBy', 'LastUpdatedDate', 'Status', 'IsDeleted'
     ];
 
     public function bookings()

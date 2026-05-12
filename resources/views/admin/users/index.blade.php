@@ -91,18 +91,54 @@
                     <table class="w-full">
                         <thead>
                             <tr class="bg-gray-50 border-b">
+                                <th class="text-left p-4 font-semibold text-gray-700">Action</th>
                                 <th class="text-left p-4 font-semibold text-gray-700">Name</th>
                                 <th class="text-left p-4 font-semibold text-gray-700">Email</th>
                                 <th class="text-left p-4 font-semibold text-gray-700">Phone</th>
                                 <th class="text-left p-4 font-semibold text-gray-700">Role</th>
                                 <th class="text-left p-4 font-semibold text-gray-700">Status</th>
                                 <th class="text-left p-4 font-semibold text-gray-700">Documents</th>
-                                <th class="text-left p-4 font-semibold text-gray-700">Action</th>
+                                <th class="text-left p-4 font-semibold text-gray-700">Created By</th>
+                                <th class="text-left p-4 font-semibold text-gray-700">Created Date</th>
+                                <th class="text-left p-4 font-semibold text-gray-700">Last Updated By</th>
+                                <th class="text-left p-4 font-semibold text-gray-700">Last Updated Date</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($users as $user)
                             <tr class="border-b hover:bg-gray-50">
+                                <td class="p-4">
+                                    @if($user->id != auth()->id())
+                                        <div class="flex gap-2">
+                                            <button onclick="openEditModal('{{ $user->id }}', '{{ $user->name }}', '{{ $user->email }}', '{{ $user->phone }}', '{{ $user->address }}', '{{ $user->verification_status }}')" 
+                                                class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600" title="Edit">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                </svg>
+                                            </button>
+                                            @if($user->verification_status == 'pending' && $user->role != 'admin')
+                                                <form action="{{ route('admin.users.approve', $user->id) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    <button class="p-2 bg-green-500 text-white rounded hover:bg-green-600" title="Approve">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                                <form action="{{ route('admin.users.reject', $user->id) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    <button class="p-2 bg-red-500 text-white rounded hover:bg-red-600" title="Reject">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </div>
+                                    @else
+                                        <span class="text-gray-500 text-sm italic">You (Current Admin)</span>
+                                    @endif
+                                </td>
                                 <td class="p-4">{{ $user->name }}</td>
                                 <td class="p-4">{{ $user->email }}</td>
                                 <td class="p-4">{{ $user->phone }}</td>
@@ -129,28 +165,14 @@
                                         <a href="{{ asset('storage/' . $user->sim_image) }}" target="_blank" class="text-blue-600 hover:underline">SIM</a>
                                     @endif
                                 </td>
-                                <td class="p-4">
-                                    @if($user->id != auth()->id())
-                                        <button onclick="openEditModal('{{ $user->id }}', '{{ $user->name }}', '{{ $user->email }}', '{{ $user->phone }}', '{{ $user->address }}', '{{ $user->verification_status }}')" 
-                                            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 mr-2 text-sm font-medium">Edit</button>
-                                        @if($user->verification_status == 'pending' && $user->role != 'admin')
-                                            <form action="{{ route('admin.users.approve', $user->id) }}" method="POST" class="inline">
-                                                @csrf
-                                                <button class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 mr-2 text-sm font-medium">Approve</button>
-                                            </form>
-                                            <form action="{{ route('admin.users.reject', $user->id) }}" method="POST" class="inline">
-                                                @csrf
-                                                <button class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 text-sm font-medium">Reject</button>
-                                            </form>
-                                        @endif
-                                    @else
-                                        <span class="text-gray-500 text-sm italic">You (Current Admin)</span>
-                                    @endif
-                                </td>
+                                <td class="p-4 text-sm text-gray-900">{{ $user->CreatedBy ?? '-' }}</td>
+                                <td class="p-4 text-sm text-gray-900">{{ $user->CreatedDate ? date('d/m/Y H:i', strtotime($user->CreatedDate)) : '-' }}</td>
+                                <td class="p-4 text-sm text-gray-900">{{ $user->LastUpdatedBy ?? '-' }}</td>
+                                <td class="p-4 text-sm text-gray-900">{{ $user->LastUpdatedDate ? date('d/m/Y H:i', strtotime($user->LastUpdatedDate)) : '-' }}</td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="6" class="p-8 text-center text-gray-500">No users found</td>
+                                <td colspan="11" class="p-8 text-center text-gray-500">No users found</td>
                             </tr>
                             @endforelse
                         </tbody>
