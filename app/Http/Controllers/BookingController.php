@@ -98,6 +98,13 @@ class BookingController extends Controller
             'CreatedBy' => auth()->user()->email,
         ]);
 
+        // Send booking confirmation email
+        try {
+            \Mail::to($booking->user->email)->send(new \App\Mail\BookingConfirmation($booking));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send booking confirmation email: ' . $e->getMessage());
+        }
+
         // Redirect to payment page
         return redirect()->route('payment.show', $booking->id);
     }
@@ -212,6 +219,13 @@ class BookingController extends Controller
             'booking_status' => 'cancelled',
             'payment_status' => 'cancelled',
         ]);
+
+        // Send cancellation email
+        try {
+            \Mail::to($booking->user->email)->send(new \App\Mail\BookingCancelled($booking));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send booking cancellation email: ' . $e->getMessage());
+        }
 
         return redirect()->route('user.bookings')->with('success', 'Booking cancelled successfully.');
     }

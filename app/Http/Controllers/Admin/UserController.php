@@ -18,6 +18,14 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $user->update(['verification_status' => 'verified']);
+        
+        // Send approval email
+        try {
+            \Mail::to($user->email)->send(new \App\Mail\UserVerificationStatus($user, 'approved'));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send approval email: ' . $e->getMessage());
+        }
+        
         return back()->with('success', 'User approved successfully');
     }
 
@@ -25,6 +33,14 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $user->update(['verification_status' => 'rejected']);
+        
+        // Send rejection email
+        try {
+            \Mail::to($user->email)->send(new \App\Mail\UserVerificationStatus($user, 'rejected'));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send rejection email: ' . $e->getMessage());
+        }
+        
         return back()->with('success', 'User rejected');
     }
 

@@ -72,6 +72,13 @@ class PaymentController extends Controller
                 'payment_status' => 'paid',
                 'booking_status' => 'confirmed',
             ]);
+            
+            // Send payment success email
+            try {
+                \Mail::to($booking->user->email)->send(new \App\Mail\PaymentSuccess($booking));
+            } catch (\Exception $e) {
+                \Log::error('Failed to send payment success email: ' . $e->getMessage());
+            }
         } elseif ($transactionStatus == 'pending') {
             $booking->update([
                 'payment_status' => 'pending',

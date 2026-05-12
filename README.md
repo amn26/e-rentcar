@@ -19,6 +19,7 @@ Aplikasi rental mobil online berbasis Laravel dengan Tailwind CSS dan fitur keam
 - ✅ User Profile Management
 - ✅ Booking History with Audit Trail
 - ✅ **PDF Receipt Download (mPDF)**
+- ✅ **Email Notifications**
 - ✅ Payment Integration (Midtrans)
 
 ### Admin Features
@@ -84,7 +85,24 @@ MIDTRANS_CLIENT_KEY=your_client_key
 MIDTRANS_IS_PRODUCTION=false
 ```
 
-7. Run migration & seeder
+7. Configure Email (SMTP)
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your_email@gmail.com
+MAIL_PASSWORD=your_app_password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="noreply@erentcar.com"
+MAIL_FROM_NAME="E-RentCar"
+```
+
+**Note for Gmail:**
+- Enable 2-Step Verification
+- Generate App Password: https://myaccount.google.com/apppasswords
+- Use App Password instead of regular password
+
+8. Run migration & seeder
 ```bash
 php artisan migrate
 php artisan db:seed
@@ -275,6 +293,15 @@ php artisan serve
 - Auto-download dengan nama `Receipt-{BookingID}.pdf`
 - Berisi: Customer info, rental details, payment summary
 - Format A4 dengan styling yang rapi
+
+### Email Notifications
+- **Booking Confirmation** - Sent when user creates a booking
+- **Payment Success** - Sent when payment is completed
+- **Booking Cancelled** - Sent when user cancels a booking
+- **Verification Approved** - Sent when admin approves user verification
+- **Verification Rejected** - Sent when admin rejects user verification
+- Professional HTML email templates
+- Automatic retry with error logging
 
 ### User Profile
 - Edit personal information
@@ -521,6 +548,15 @@ Kelompok 3 - Sistem Rental Mobil
 This project is for educational purposes.
 
 ## Changelog
+
+### Version 1.4.0 (2026-05-12)
+- ✅ Added Email Notifications System
+- ✅ Booking Confirmation Email
+- ✅ Payment Success Email
+- ✅ Booking Cancellation Email
+- ✅ User Verification Status Email (Approved/Rejected)
+- ✅ Professional HTML Email Templates
+- ✅ SMTP Configuration with Gmail Support
 
 ### Version 1.3.0 (2026-05-12)
 - ✅ Added Professional Dashboard with Date Filter (24H/7D/30D/All Time)
