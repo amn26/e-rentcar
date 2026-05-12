@@ -7,8 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @media print {
-            .no-print { display: none; }
+            .no-print { display: none !important; }
             body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+            @page { margin: 1cm; }
         }
     </style>
 </head>
@@ -16,16 +17,16 @@
     <div class="max-w-4xl mx-auto p-8">
         <!-- Print Buttons -->
         <div class="no-print mb-4 flex gap-2">
-            <button onclick="window.print()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
-                🖨️ Print Receipt
-            </button>
-            <a href="{{ route('user.bookings') }}" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700">
+            <a href="{{ route('user.bookings.download-pdf', $booking->id) }}" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 font-medium">
+                📥 Download PDF
+            </a>
+            <a href="{{ route('user.bookings') }}" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 font-medium">
                 ← Back to Bookings
             </a>
         </div>
 
         <!-- Receipt -->
-        <div class="bg-white shadow-lg rounded-lg p-8">
+        <div class="bg-white shadow-lg rounded-lg p-8" id="receipt">
             <!-- Header -->
             <div class="text-center border-b-2 border-blue-600 pb-6 mb-6">
                 <h1 class="text-3xl font-bold text-blue-600">E-RENTCAR</h1>

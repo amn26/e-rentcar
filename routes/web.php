@@ -55,6 +55,7 @@ Route::middleware(['auth'])->prefix('user')->group(function () {
     Route::delete('/bookings/{id}', [BookingController::class, 'destroy'])->name('user.bookings.destroy')->middleware('role:user');
     Route::post('/bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('user.bookings.cancel')->middleware('role:user');
     Route::get('/bookings/{id}/receipt', [BookingController::class, 'receipt'])->name('user.bookings.receipt')->middleware('role:user');
+    Route::get('/bookings/{id}/download-pdf', [BookingController::class, 'downloadPDF'])->name('user.bookings.download-pdf')->middleware('role:user');
     
     Route::get('/profile', [ProfileController::class, 'index'])->name('user.profile');
     Route::post('/profile', [ProfileController::class, 'update'])->name('user.profile.update');

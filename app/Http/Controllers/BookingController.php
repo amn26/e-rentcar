@@ -163,6 +163,7 @@ class BookingController extends Controller
             'total_days' => $validated['total_days'],
             'total_price' => $validated['total_price'],
             'payment_expires_at' => now()->addMinutes(10), // Reset timer
+            'snap_token' => null, // Reset snap token to regenerate with new price
         ]);
 
         return redirect()->route('user.bookings')->with('success', 'Booking updated successfully.');
@@ -233,5 +234,43 @@ class BookingController extends Controller
         }
 
         return view('bookings.receipt', compact('booking'));
+    }
+
+    public function downloadPDF($id)
+    {
+        if (!auth()->check()) {
+            $user = \App\Models\User::where('role', 'user')->first();
+            auth()->login($user);
+        }
+
+        $booking = Booking::with(['car', 'user'])->findOrFail($id);
+        
+        if ($booking->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        if ($booking->payment_status !== 'paid') {
+            return back()->with('error', 'Receipt only available for paid bookings.');
+        }
+
+        try {
+            // Generate PDF
+            $mpdf = new \Mpdf\Mpdf([
+                'format' => 'A4',
+                'margin_top' => 10,
+                'margin_bottom' => 10,
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'tempDir' => storage_path('app/mpdf'),
+                'mode' => 'utf-8',
+            ]);
+
+            $html = view('bookings.receipt-pdf', compact('booking'))->render();
+            $mpdf->WriteHTML($html);
+            
+            return $mpdf->Output('Receipt-' . $booking->id . '.pdf', 'D');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to generate PDF: ' . $e->getMessage());
+        }
     }
 }

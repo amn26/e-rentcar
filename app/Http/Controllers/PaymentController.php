@@ -31,8 +31,8 @@ class PaymentController extends Controller
             return redirect()->route('user.bookings')->with('info', 'Payment already processed');
         }
 
-        // Check if snap token already exists
-        if (!$booking->snap_token) {
+        // Always regenerate snap token if null (including after booking update)
+        if (empty($booking->snap_token)) {
             $snapToken = $this->midtrans->getSnapToken($booking);
             $booking->update(['snap_token' => $snapToken]);
         } else {

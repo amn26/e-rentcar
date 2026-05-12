@@ -17,11 +17,9 @@ class MidtransService
 
     public function createTransaction($booking)
     {
-        // Add timestamp suffix if snap_token exists (retry scenario)
-        $orderId = $booking->id;
-        if ($booking->snap_token) {
-            $orderId = $booking->id . '-' . time();
-        }
+        // Add timestamp suffix to order_id to make it unique for each payment attempt
+        // This allows re-payment after booking edit
+        $orderId = $booking->id . '-' . time();
 
         $params = [
             'transaction_details' => [
